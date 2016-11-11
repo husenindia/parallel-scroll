@@ -1,0 +1,230 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta name="robots" content="noindex, nofollow">
+        <meta name="googlebot" content="noindex, nofollow">
+
+
+
+
+
+
+        <script type="text/javascript" src="js/jquery-2.1.3.js"></script>
+
+
+
+
+        <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+
+
+        <style type="text/css">
+            .scroll { display: inline-block; width: 200px; height: 200px; overflow-y: auto; }
+                
+        </style>
+        <title> by powerphillg5</title>
+
+
+
+
+        <script type="text/javascript">//&lt;![CDATA[
+$(window).load(function(){
+(function ($) {
+
+    var methods = {
+
+        /**
+         * @var options default options
+         */
+        options: {
+            /**
+             * @var eventTimeOut number the time in milliseconds
+             */
+            eventTimeOut: 200,
+
+            /**
+             * @var scrollSpeed number the time in milliseconds the other light boxes should take to scroll to their relevant point.
+             */
+            scrollSpeed: 100
+        },
+
+        /**
+         * init
+         *
+         * method that applies brings everything together
+         *
+         * @param options object an object that overwrites the default options
+         * @return null
+         */
+        init: function (options) {
+            // overwrite defaults
+            $.extend(methods.options, options);
+
+            /**
+             * @var $this object cached global jQuery variable
+             */
+            var $this = $(this);
+
+            // Assign IDs. Used to prevent jittering of element that is calling.
+            var id_num = 0;
+            $(this).each(function(){
+                $(this).data("scrollid", id_num);
+                id_num++;
+            });
+
+            // bind on scroll
+            var callback = function (el) {
+
+                var
+                   /**
+                    * @var scroll_percent number percentage of top of element scrolled
+                    */
+                    scroll_percent = methods.convertScrollToPercent.call(el),
+                    /**
+                     * @var me number scroll id of element calling the scroll method
+                     */
+                     me = el.data("scrollid");
+
+                // Loop through each
+                $.each($this, function () {
+                    // Set scroll to false to prevent this element from calling same event
+                    $(this).data("scroll", false);
+                    // if it's the same element, skip
+                    if (me !== $(this).data("scrollid")) {
+                        // Scroll the element to percent
+                        methods.scrollToPercent.call(this, scroll_percent);
+                    }
+                    // Turn scroll back on
+                    $(this).data("scroll", true);
+                });
+
+            }
+
+            // Assign scroll handler
+            $(this).scroll(function (event) {
+                /**
+                 * @var scroll_on boolean get scroll data value to see if it's safe to scroll
+                 */
+                var scroll_on = $(this).data("scroll");
+
+                // cancel call if it's not safe
+                if (scroll_on == false) return;
+
+                // Call method callback
+                callback($(this));
+            });
+
+        },
+
+        /**
+         * convertScrollToPercent
+         *
+         * converts the scroll position to percent and returns it.
+         *
+         * @return number the percentage (duh)
+         */
+        convertScrollToPercent: function () {
+            // Defaults
+
+            var
+                horrizontal = $(this).data("horizontal") || false,
+                scrollStyle = (horrizontal != false ? "scrollLeft" : "scrollTop"),
+                scrollWidth = (horrizontal != false ? "scrollWidth" : "scrollHeight");
+            // get top and scroll position
+
+            var
+                top = $(this)[scrollStyle](),
+                height = (horrizontal ? $(this)[0].scrollWidth - $(this).width() : $(this)[0].scrollHeight - $(this).height());
+
+            // console.log("top :" + top + ", height :" + height);
+            // height == 100 then what does top equal? ()
+            var
+            answer = 100 * top,
+                answer = answer / height
+
+                //   return answer;
+            return Math.round(answer);
+
+        },
+
+        /**
+         * scrollToPercent
+         *
+         * This method takes a percent and scrolls an element to that given point.
+         *
+         * @param percent numher the percent to which the element will be scrolled to.
+         */
+        scrollToPercent: function (percent) {
+
+            var
+               /**
+                * @var horrizontal boolean what type of scroll to use. Horizontal or vertical
+                */
+                horrizontal = $(this).data("horizontal") || false,
+                /**
+                 * @var height number the height or width of the element
+                 */
+                height = (horrizontal ? $(this)[0].scrollWidth - $(this).width() : $(this)[0].scrollHeight - $(this).height()),
+                // Perform equation to determin relative scroll positon
+                answer = percent * height,
+                /**
+                 * @var answer number the top or left position
+                 */
+                answer = answer / 100;
+
+            // scroll element to answer position
+            if (horrizontal == true) {
+                $(this).scrollLeft(answer);
+            }
+            else {
+                $(this).scrollTop(answer);
+            }
+        }
+    }
+
+    /**
+     * bindScroll
+     *
+     * a jqeury plugin that will bind the scroll to the given elements.
+     * each element should have a data attribute called scrollid. This
+     * will let the plugin know not to apply the scrolling bind to that active
+     * element. If element is to be a horizontal scroll, specify by setting
+     * data-horizontal attribute to true.
+     *
+     * @param options object object with options (currently no options exist);
+     * @return object returns the jQuery DOM object to maintain chainability
+     */
+    $.fn.bindScroll = function (options) {
+        methods.init.call(this, options);
+        return this;
+    }
+
+})($);
+
+
+$(document).ready(function () {
+    // apply bindScroll to all elements with .scroll.
+    $(".scroll").bindScroll();
+});
+});//]]&gt;
+
+        </script>
+
+    </head>
+
+<body>
+
+    <div class="scroll">
+        testsin <br />
+        testsin <br />testsin <br />testsin <br />testsin <br />testsin <br />testsin <br />testsin <br />
+        testsin <br />testsin <br />testsin <br />testsin <br />testsin <br />testsin <br />testsin <br />
+    </div>
+    <div class="scroll">
+        testsin <br />
+        testsin <br />testsin <br />testsin <br />testsin <br />testsin <br />testsin <br />testsin <br />
+        testsin <br />testsin <br />testsin <br />testsin <br />testsin <br />testsin <br />testsin <br />
+    </div>
+</body>
+</html>
